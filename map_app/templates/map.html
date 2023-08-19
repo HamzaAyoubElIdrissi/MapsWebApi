@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Map API</title>
+    <style>
+        #map {
+            margin-top: 20px;
+            height: 650px;
+            width: 80%;
+            margin-left: 150px;
+        }
+        /* Add some style for the Submit button */
+        #address-form button[type="submit"] {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #008080;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 4px;
+        }
+
+        #address-form button[type="submit"]:hover {
+            background-color: #006666;
+        }
+
+        /* Add some basic styling for the addresses table */
+        #addresses-table {
+            margin-top: 10px;
+            border-collapse: collapse;
+            width: 85%;
+            max-height: 300px; /* Set a fixed height for the table */
+            overflow-y: auto; /* Make the table scrollable if it exceeds the height */
+            font-family: 'Arial', sans-serif;
+            background-color: #f1f1f1;
+            color: #333;
+        }
+
+        #addresses-table th, #addresses-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        .button-style {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 15px 25px;
+            cursor: pointer;
+        }
+        .button-style:hover{
+            background-color: #DC143C;
+        }
+
+        #addresses-table th {
+            background-color: #008080;
+            color: #fff;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+        #addresses-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        #addresses-table tr:hover {
+            background-color: #e6e6e6;
+        }
+
+        #show-direction-button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #008080;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 4px;
+        }
+
+        #show-direction-button:hover {
+            background-color: #006666;
+        }
+
+        #show-route-button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #008080;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 4px;
+        }
+
+        #show-route-button:hover {
+            background-color: #006666;
+        }
+
+        #direction-form {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        #direction-form label {
+            margin-right: 10px;
+        }
+
+        #cluster-select {
+            padding: 8px;
+            font-size: 16px;
+            border: 2px solid #008080;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+
+        /* Styles for the output results (distance and duration) */
+        #results {
+            margin-top: 10px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        #results span {
+            color: #008080;
+            margin-right: 10px;
+        }
+
+
+        /* Add some style for the address input field */
+        #address-input {
+            margin-top: 10px;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #008080;
+            border-radius: 4px;
+            width: 300px;
+            margin-right: 10px;
+        }
+
+        #address-input:focus {
+            outline: none; /* Remove the default focus outline */
+            border-color: #006666; /* Change the border color when the input is in focus */
+        }
+        /* Add some style for the "Show All" button */
+        #show-all-button {
+            margin: 10px 0;
+            padding: 10px 20px;
+            background-color: #008080;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 4px;
+        }
+
+        #show-all-button:hover {
+            background-color: #006666;
+        }
+
+        #clear-all-button {
+            margin: 10px 0;
+            padding: 8px 20px;
+            background-color: #fff;
+            color: #008080;
+            border: 2px solid #008080;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 4px;
+        }
+
+        #clear-all-button:hover {
+            background-color:  #b1abab;
+        }
+        #show-schools-button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #008080;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 4px;
+        }
+
+        #locate-button {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            z-index: 1;
+            background-color: #006666;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            border-radius: 4px;
+            padding: 8px 12px;
+            }
+        
+        #show-universities-button{
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #008080;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 4px;
+        }
+
+        #show-restaurants-button{
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #008080;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 4px;
+        }
+        #show-gas-button{
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #008080;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 4px;
+        }
+
+        #show-gas-button:hover {
+            background-color: #DC143C;
+        }
+
+        #show-schools-button:hover {
+            background-color: #DC143C;
+        }
+
+        #show-restaurants-button:hover{
+            background-color: #DC143C;
+        }
+
+        #show-universities-button:hover{
+            background-color: #DC143C;
+        }
+        #locate-button:hover {
+            background-color: #DC143C;
+            }
+    </style>
+        <script src="https://maps.googleapis.com/maps/api/js?key={{ api_key }}&libraries=places,geocoder"></script>
+        <script>
+            var routeCoordinates = []; // To store the route coordinates for the polyline
+            var map; // Define map variable globally
+            var markers = []; // Define markers array globally
+            let directionsRenderer;
+            var userLocation = null;
+    
+            function initMap() {
+                map = new google.maps.Map(document.getElementById('map'), {
+                    center: { lat: 33.5739276, lng: -7.6095867 }, // Casablanca coordinates
+                    zoom: 12,
+                    heading: 320,
+                    tilt: 180,
+                    mapId: "90f87356969d889c",
+                    // 15431d2b469f209e
+                });
+                infoWindow = new google.maps.InfoWindow();
+                var marker = null;
+
+                // Request user's location on map initialization
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        function (position) {
+                            userLocation = {
+                                lat: position.coords.latitude,
+                                lng: position.coords.longitude,
+                            };
+                        },
+                        function (error) {
+                            console.error('Error getting user location:', error);
+                        }
+                    );
+                } else {
+                    console.error('Geolocation is not supported by this browser.');
+                }
+
+                map.addListener("click", (mapsMouseEvent) => {
+                    infoWindow.close();
+                    // Remove the previous marker if it exists
+                    if (marker) {
+                        marker.setMap(null);
+                    }
+
+                    marker = new google.maps.Marker({
+                        position: mapsMouseEvent.latLng,
+                        map: map
+                    });
+                        // Convert the clicked coordinates to a user-friendly format and set it in the input field
+                    var clickedCoordinates = mapsMouseEvent.latLng.toJSON();
+                    var formattedCoordinates = clickedCoordinates.lat + ', ' + clickedCoordinates.lng ;
+                    document.getElementById('address-input').value = formattedCoordinates;
+
+
+                    // const latLng = mapsMouseEvent.latLng.toJSON();
+                    // const latLngString = `{ ${latLng.lat}, ${latLng.lng} }`;
+                    
+                    infoWindow.setContent(formattedCoordinates);
+                    infoWindow.setPosition(mapsMouseEvent.latLng);
+                    infoWindow.open(map);
+                    markers.push(marker);
+                });
+                const buttons = [
+                    ["Rotate Left", "rotate", 20, google.maps.ControlPosition.LEFT_CENTER],
+                    ["Rotate Right", "rotate", -20, google.maps.ControlPosition.RIGHT_CENTER],
+                    ["Tilt Down", "tilt", 20, google.maps.ControlPosition.TOP_CENTER],
+                    ["Tilt Up", "tilt", -20, google.maps.ControlPosition.BOTTOM_CENTER],
+                ];
+
+                buttons.forEach(([text, mode, amount, position]) => {
+                    const controlDiv = document.createElement("div");
+                    const controlUI = document.createElement("button");
+
+                    controlUI.classList.add("ui-button");
+                    controlUI.classList.add("button-style");
+                    controlUI.innerText = `${text}`;
+                    controlUI.addEventListener("click", () => {
+                        adjustMap(mode, amount);
+                    });
+                    controlDiv.appendChild(controlUI);
+                    map.controls[position].push(controlDiv);
+                });
+
+                const adjustMap = function (mode, amount) {
+                    switch (mode) {
+                        case "tilt":
+                            map.setTilt(map.getTilt() + amount);
+                            break;
+                        case "rotate":
+                            map.setHeading(map.getHeading() + amount);
+                            break;
+                        default:
+                            break;
+                    }
+                };
+                
+                var locateButton = document.createElement('button');
+                locateButton.id = 'locate-button';
+                locateButton.innerText = 'Locate Me';
+                map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(locateButton);
+                
+                locateButton.addEventListener('click', function () {
+                    if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        function (position) {
+                        var userLocation = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude,
+                        };
+                        map.setCenter(userLocation);
+                        map.setZoom(16);
+
+                        var userMarker = new google.maps.Marker({
+                            position: userLocation,
+                            map: map,
+                            icon: {
+                            path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
+                            scale: 6,
+                            fillColor: '#FF4500',
+                            fillOpacity: 1,
+                            strokeWeight: 1,
+                            },
+                        });
+                        markers.push(userMarker);
+                        },
+                        function (error) {
+                        console.error('Error getting user location:', error);
+                        }
+                    );
+                    } else {
+                    console.error('Geolocation is not supported by this browser.');
+                    }
+                });
+
+
+                
+                function showPoiMarkers(featureType) {
+                    const service = new google.maps.places.PlacesService(map);
+                    const sectionCenterPoints = [
+                        {lat: 33.62111287229162, lng: -7.514835005693639},
+                        {lat: 33.59380892593281, lng: -7.498277539162279},
+                        {lat: 33.57891222007031, lng: -7.5201333949836755},
+                        {lat: 33.6120125176689, lng: -7.545300744111345},
+                        {lat: 33.59987721683617, lng: -7.567818898593997},
+                        {lat: 33.57587739060995, lng: -7.548943386748245},
+                        {lat: 33.56208136645429, lng: -7.537353160176292},
+                        {lat: 33.54966306007355, lng: -7.553248328046399},
+                        {lat: 33.57339426895512, lng: -7.572454989222778},
+                        {lat: 33.5916021688402, lng: -7.588019007762258},
+                        {lat: 33.59960139469413, lng: -7.605569922285501},
+                        {lat: 33.58222282141344, lng: -7.608219116930518},
+                        {lat: 33.566496334027185, lng: -7.594641994374802},
+                        {lat: 33.529237963886494, lng: -7.566825450602115},
+                        {lat: 33.49941970332343, lng: -7.540995802813192},
+                        {lat: 33.47345840958579, lng: -7.545631893441972},
+                        {lat: 33.44942347066445, lng: -7.5780845278434406},
+                        {lat: 33.47124857847486, lng: -7.594641994374802},
+                        {lat: 33.48561147330598, lng: -7.56616315194086},
+                        {lat: 33.503285613112816, lng: -7.580733722488458},
+                        {lat: 33.49168736579629, lng: -7.605901071616128},
+                        {lat: 33.536690923089324, lng: -7.608219116930518},
+                        {lat: 33.51847144419506, lng: -7.590999351737903},
+                        {lat: 33.537242968582596, lng: -7.606563370277382},
+                        {lat: 33.53006610219161, lng: -7.633055316727559},
+                        {lat: 33.54386723950493, lng: -7.644314393968886},
+                        {lat: 33.55959784800265, lng: -7.612524058228673},
+                        {lat: 33.57504969132843, lng: -7.633055316727559},
+                        {lat: 33.595188120447304, lng: -7.622789687478117},
+                        {lat: 33.59960139469413, lng: -7.655573471210212},
+                        {lat: 33.58139518298384, lng: -7.675111281717219},
+                        {lat: 33.567600040650795, lng: -7.665176801798402},
+                        {lat: 33.55545849188482, lng: -7.689019553603561},
+                        {lat: 33.56897965409049, lng: -7.710544260094332},
+                        {lat: 33.553802693895506, lng: -7.733724713238238},
+                        {lat: 33.5402791557766, lng: -7.715180350723114},
+                        {lat: 33.52371683916494, lng: -7.697298286869244},
+                        {lat: 33.54221121937127, lng: -7.675773580378473},
+                        {lat: 33.5226125719222, lng: -7.658553815185857},
+                        {lat: 33.509912485327035, lng: -7.6814031189991345},
+                        {lat: 33.49527746552909, lng: -7.669812892427182},
+                        {lat: 33.497210534497015, lng: -7.6433209459770035},
+                        {lat: 33.481744774327595, lng: -7.632724167396934},
+                        {lat: 33.477049264946196, lng: -7.659216113847112},
+                        {lat: 33.453567901040216, lng: -7.648950484597667},
+                        {lat: 33.459922309595655, lng: -7.6251077327925065},
+                        {lat: 33.43947602973701, lng: -7.616497850196199},
+                        {lat: 33.42759286935427, lng: -7.638684855348223},
+                        {lat: 33.411838265248946, lng: -7.628088076768153},
+                        {lat: 33.423723582305186, lng: -7.593648546382921},
+                        {lat: 33.430356540225546, lng: -7.563513957295843},
+                        {lat: 33.458264682695415, lng: -7.528743277579984}
+                    ];
+
+                    
+                    const addedAddresses = new Set(); // Store added addresses
+                    // Define the request parameters
+                    const radius = 5000; // Adjust the radius as needed
+                    sectionCenterPoints.forEach(sectionCenter => {
+                        const request = {
+                            location: sectionCenter,
+                            radius: radius,
+                            type: [featureType]
+                        };
+
+                    // Perform the nearby search
+                    service.nearbySearch(request, (results, status) => {
+                        if (status === google.maps.places.PlacesServiceStatus.OK) {
+                            results.forEach(place => {
+                                const address = place.name;
+                                // Check if the address has already been added
+                                if (!addedAddresses.has(address)) {
+                                    const marker = new google.maps.Marker({
+                                        position: place.geometry.location,
+                                        map: map,
+                                        title: place.name,
+                                        //icon: "custom-icon.png",
+                                    });
+                                    const infoWindowContent = `
+                                        <div>
+                                            <h3>${place.name}</h3>
+                                            <p>Category: ${place.types.join(", ")}</p>
+                                            <p>Rating: ${place.rating}</p>
+                                            <p>Address: ${place.vicinity}</p>
+                                            <p>Phone: ${place.formatted_phone_number}</p>
+                                            <p>Website: <a href="${place.website}" target="_blank">${place.website}</a></p>
+                                        </div>
+                                    `;
+
+                                    const infoWindow = new google.maps.InfoWindow({
+                                        content: infoWindowContent,
+                                    });
+
+                                    marker.addListener("click", () => {
+                                        infoWindow.open(map, marker);
+                                    });
+
+                                    markers.push(marker);
+                                    addedAddresses.add(address); // Add address to the set
+                                // Populate the addresses list with the address
+                                const addressesList = document.getElementById('poi-addresses-list');
+                                const listItem = document.createElement('li');
+                                listItem.innerText = place.name; // Use desired information here
+                                addressesList.appendChild(listItem);
+                                }
+                            });
+                        }
+                    });  
+                });
+                }
+
+                function addMarker(data) {
+                    var clusterColor = 'blue';
+                    if (data.cluster === 1) {
+                        clusterColor = 'yellow';
+                    } else if (data.cluster === 2) {
+                        clusterColor = 'red';
+                    } else if (data.cluster === 3) {
+                        clusterColor = 'green';
+                    } else if (data.cluster === 4) {
+                        clusterColor = 'black';
+                    } else if (data.cluster === 5) {
+                        clusterColor = 'purple';
+                    }
+    
+                    var marker = new google.maps.Marker({
+                        position: {lat: parseFloat(data.latitude), lng: parseFloat(data.longitude)},
+                        map: map,
+                        icon: {
+                            path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
+                            scale: 5,
+                            strokeWeight: 2,
+                            fillColor: clusterColor,
+                            fillOpacity: 0.8,
+                            strokeWeight: 0,
+                            scale: 5
+                        }
+                    });
+    
+                    markers.push(marker);
+                }
+    
+                function clearAllMarkers() {
+                    markers.forEach(marker => {
+                        marker.setMap(null);
+                    });
+                    markers = [];
+                    // Clear the polylines by setting their map property to null
+                    if (routePath) {
+                        routePath.setMap(null);
+                    }
+                    if (directionsRenderer) {
+                        directionsRenderer.setDirections(null);
+                    }
+                }
+    
+                function submitForm(event) {
+                    event.preventDefault();
+                    var address = document.getElementById('address-input').value;
+                    fetch('/addresses_add/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}',
+                        },
+                        body: JSON.stringify({'address': address})
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log("Data received from server:", data);
+                        addMarker(data);
+                        document.getElementById('address-input').value = "";
+                        fetchAddressesTable();
+                    });
+                }
+    
+                function fetchAddressesTable() {
+                    fetch('/addresses_list/')
+                    .then(response => response.json())
+                    .then(data => {
+                        var table = '<table id="addresses-table">' +
+                                    '<tr>' +
+                                    '<th>ID</th>' +
+                                    '<th>Address</th>' +
+                                    '<th>Latitude</th>' +
+                                    '<th>Longitude</th>' +
+                                    '<th>Cluster</th>' +
+                                    '</tr>';
+                        data.addresses.forEach(address => {
+                            table += '<tr>' +
+                                    '<td>' + address.id + '</td>' +
+                                    '<td>' + address.address + '</td>' +
+                                    '<td>' + address.latitude + '</td>' +
+                                    '<td>' + address.longitude + '</td>' +
+                                    '<td>' + address.cluster + '</td>' +
+                                    '</tr>';
+                        });
+                        table += '</table>';
+                        document.getElementById('addresses-table').innerHTML = table;
+
+                         // Populate the cluster selection dropdown after fetching addresses
+                        populateClusterDropdown();
+                    });
+                }
+    
+                
+                function populateClusterDropdown() {
+                    fetch('/cluster_list/')
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            const clusterSelect = document.getElementById('cluster-select');
+                            clusterSelect.innerHTML = '';
+                            data.clusters.forEach(cluster => {
+                                const option = document.createElement('option');
+                                option.value = cluster.id;
+                                option.text = `Cluster ${cluster.id}`;
+                                clusterSelect.appendChild(option);
+                            });
+                        })
+                        .catch(error => {
+                            console.error('Error fetching cluster data:', error);
+                        });
+                }
+
+                let routePath;
+
+                function drawPolyline(routeCoordinates) {
+                    // Remove any existing polylines and markers
+                    clearAllMarkers();
+
+                    // Add custom markers for start and end points
+                    if (routeCoordinates.length > 0) {
+                        var startMarker = new google.maps.Marker({
+                            position: routeCoordinates[0],
+                            map: map,
+                            icon: {
+                                path: google.maps.SymbolPath.CIRCLE,
+                                scale: 6,
+                                fillColor: '#FF4500', // Use the same color as the polyline/DarkRed
+                                fillOpacity: 1,
+                                strokeWeight: 1,
+                            }
+                        });
+                        markers.push(startMarker);
+
+                        var endMarker = new google.maps.Marker({
+                            position: routeCoordinates[routeCoordinates.length - 1],
+                            map: map,
+                            icon: {
+                                path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
+                                scale: 8,
+                                fillColor: '#7CFC00', // Use the same color as the polyline/LawnGreen
+                                fillOpacity: 1,
+                                strokeWeight: 1,
+                            }
+                        });
+                        markers.push(endMarker);
+
+                        // Add markers for the waypoints (addresses)
+                        routeCoordinates.forEach(function (coordinate, index) {
+                            if (index !== 0 && index !== routeCoordinates.length - 1) {
+                                var addressMarker = new google.maps.Marker({
+                                    position: coordinate,
+                                    map: map,
+                                    icon: {
+                                        path: google.maps.SymbolPath.CIRCLE,
+                                        scale: 3,
+                                        fillColor: '#00FFFF', // Use a suitable color for the waypoints
+                                        fillOpacity: 1,
+                                        strokeWeight: 1,
+                                    }
+                                });
+                                markers.push(addressMarker);
+                            }
+                        });
+
+                        // Reverse the order of coordinates to draw polyline from start to end
+                        routePath = new google.maps.Polyline({
+                            path: routeCoordinates,
+                            geodesic: true,
+                            strokeColor: '##7B68EE', // Change to a suitable color (blue in this case)/GoldenRod
+                            strokeOpacity: 0.8,
+                            strokeWeight: 3, // Change to a suitable value for the thickness
+                        });
+                        routePath.setMap(map);
+
+                        const selectedCluster = document.getElementById('cluster-select').value;
+                        addClusterMarkers(selectedCluster);
+                    }
+                }
+                function addAllMarkers() {
+                    fetch('/addresses_list/')
+                        .then(response => response.json())
+                        .then(data => {
+                            data.addresses.forEach(address => {
+                                addMarker({
+                                    latitude: address.latitude,
+                                    longitude: address.longitude,
+                                    cluster: address.cluster,
+                                });
+                            });
+                        });
+                }
+
+                function addClusterMarkers(selectedCluster) {
+                    fetch(`/cluster_addresses_list/${selectedCluster}/`)
+                        .then(response => response.json())
+                        .then(data => {
+                            data.addresses.forEach(address => {
+                                addMarker({
+                                    latitude: address.latitude,
+                                    longitude: address.longitude,
+                                    cluster: address.cluster,
+                                });
+                            });
+                        })
+                        .catch(error => {
+                            console.error('Error fetching cluster addresses:', error);
+                        });
+                }
+
+
+
+
+
+                function showRoute() {
+                    const selectedCluster = document.getElementById('cluster-select').value;
+                    // Clear previously drawn route
+                    // directionsRenderer.setDirections(null);
+                    // Fetch optimized route coordinates from /show_route/${selectedCluster}/
+                    // Clear previously drawn route
+                    
+                    if (userLocation) {
+                        fetchRoute(selectedCluster, userLocation);
+                    } else {
+                        // Request user location permission
+                        if (navigator.geolocation) {
+                            navigator.geolocation.getCurrentPosition(
+                                function (position) {
+                                    const userLocation = {
+                                        lat: position.coords.latitude,
+                                        lng: position.coords.longitude,
+                                    };
+                                    fetchRoute(selectedCluster, userLocation);
+                                },
+                                function (error) {
+                                    console.error('Error getting user location:', error);
+                                }
+                            );
+                        } else {
+                            console.error('Geolocation is not supported by this browser.');
+                        }
+                    }
+                }
+
+                function fetchRoute(selectedCluster, userLocation) {
+
+                    if (directionsRenderer) {
+                        directionsRenderer.setDirections(null);
+                    }
+                    const lat = parseFloat(userLocation.lat);
+                    const lng = parseFloat(userLocation.lng);
+                    fetch(`/show_route/${selectedCluster}/${lat}/${lng}`)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(routeData => {
+                            console.log('Fetched route coordinates:', routeData.optimal_route_coordinates);
+                            const routeCoordinates = routeData.optimal_route_coordinates;
+                            
+                            // Initialize directionsRenderer and directionsService
+                            const directionsRenderer = new google.maps.DirectionsRenderer();
+                            const directionsService = new google.maps.DirectionsService();
+                            
+                            directionsRenderer.setMap(map);
+
+                            const origin = new google.maps.LatLng(routeCoordinates[0].latitude, routeCoordinates[0].longitude);
+                            const destination = new google.maps.LatLng(
+                                routeCoordinates[routeCoordinates.length - 1].latitude,
+                                routeCoordinates[routeCoordinates.length - 1].longitude
+                            );
+                            const waypoints = routeCoordinates.slice(1, -1).map(coord => ({
+                                location: new google.maps.LatLng(coord.latitude, coord.longitude),
+                                stopover: true
+                            }));
+
+                            const request = {
+                                origin: origin,
+                                destination: destination,
+                                waypoints: waypoints,
+                                travelMode: google.maps.TravelMode.DRIVING,
+                                optimizeWaypoints: true
+                            };
+
+                            directionsService.route(request, (response, status) => {
+                                if (status === "OK") {
+                                    directionsRenderer.setDirections(response);
+                                } else {
+                                    console.error("Directions request failed due to " + status);
+                                }
+                            });
+                        })
+                        .catch(error => {
+                            console.error('Error fetching optimal route coordinates:', error);
+                        });
+                }
+                function showDirection() {
+                    const selectedCluster = document.getElementById('cluster-select').value;
+                    if (routePath) {
+                        routePath.setMap(null);
+                    }
+                    fetch(`/cluster_directions/${selectedCluster}/`)
+                    .then(response => {
+                        if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        const routeCoordinates = data.coordinates;
+                        const totalDistance = data.total_distance_km;
+                        const totalDuration = data.total_duration_min;
+                        
+                        // Update the UI with distance and duration
+                        document.getElementById('distance').innerText = `Total Distance: ${totalDistance} km`;
+                        document.getElementById('duration').innerText = `Total Duration: ${totalDuration} minutes`;
+
+                        drawPolyline(routeCoordinates);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching cluster directions:', error);
+                    });
+                }
+    
+                // Event listeners for buttons
+                document.getElementById('clear-all-button').addEventListener('click', function() {
+                    clearAllMarkers();
+                    document.getElementById('poi-addresses-list').innerHTML = ''; // Clear the POI addresses list
+                });
+
+                document.getElementById('show-schools-button').addEventListener('click', function() {
+                    showPoiMarkers('school');
+                });
+
+                document.getElementById('show-universities-button').addEventListener('click', function() {
+                    showPoiMarkers('university');
+                });
+
+                document.getElementById('show-restaurants-button').addEventListener('click', function() {
+                    showPoiMarkers('restaurant','food');
+                });
+
+                document.getElementById('show-gas-button').addEventListener('click', function() {
+                    showPoiMarkers('gas_station');
+                });
+       
+                document.getElementById('show-all-button').addEventListener('click', function() {
+                    addAllMarkers();
+                });
+    
+                document.getElementById('address-form').addEventListener('submit', submitForm);
+    
+                document.getElementById('show-direction-button').addEventListener('click', function() {
+                    showDirection();
+                });
+
+                document.getElementById('show-route-button').addEventListener('click', function() {
+                    showRoute();
+                });
+    
+                // Fetch and display the addresses table on page load
+                fetchAddressesTable();
+
+            }
+    
+            // Initialize the map when the page has finished loading
+            window.addEventListener('load', initMap);
+         
+        </script>
+    </head>
+    <body>
+        <div id="map"></div>
+        <form id="address-form">
+            <input type="text" id="address-input" placeholder="Coordinates will be shown here">
+            <script>
+                var addressInput = document.getElementById('address-input');
+                var autocomplete = new google.maps.places.Autocomplete(addressInput);
+            </script>
+            <button type="submit">Submit</button>
+        </form>
+    
+        <!-- Display the "Show All" button below the map and submit button -->
+        <button id="show-all-button">Show All</button>
+        <button id="clear-all-button">Clear All</button>
+        <button id="show-schools-button">Show Schools</button>
+        <button id="show-universities-button">Show Universities</button>
+        <button id="show-restaurants-button">Show Restaurants</button>
+        <button id="show-gas-button">Show Gas Stations</button>
+        <form id="direction-form">
+            <label for="cluster-select">Select Cluster:</label>
+            <select id="cluster-select" name="cluster">
+                <!-- Options will be populated dynamically using JavaScript -->
+            </select>
+            <button type="button" id="show-direction-button">Show Direction</button>
+        </form>
+        <button type="button" id="show-route-button">Show Route</button>
+        <!-- Display the addresses table below the map and submit button -->
+        <div id="addresses-table"></div>
+        <div id="results">
+            <span id="distance">Total Distance: N/A km</span>
+            <span id="duration">Total Duration: N/A minutes</span>
+        </div>
+        <div>
+            <h2>POI Addresses</h2>
+            <ul id="poi-addresses-list"></ul>
+        </div>
+
+    </body>
+    </html>
